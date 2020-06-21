@@ -5,12 +5,14 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -64,6 +66,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
         });
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                removeTodo(recyclerViewAdapter.getTodo(viewHolder.getAdapterPosition()));
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -125,6 +138,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private void removeTodo(final Todo todo) {
+        new AsyncTask<Todo, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Todo... params) {
+                return myDatabase.daoAccess().deleteTodo(params[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Integer number) {
+                super.onPostExecute(number);
+
+                Toast.makeText(getApplicationContext(), number + " rows deleted", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.removeRow(todo);
+            }
+        }.execute(todo);
+
+    }
 
     @SuppressLint("StaticFieldLeak")
     private void loadFilteredTodos(String category) {
@@ -140,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 recyclerViewAdapter.updateTodoList(todoList);
             }
         }.execute(category);
-
     }
 
 
@@ -150,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             @Override
             protected Todo doInBackground(Integer... params) {
                 return myDatabase.daoAccess().fetchTodoListById(params[0]);
-
             }
 
             @Override
@@ -271,4 +300,3 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
     }
 }
-

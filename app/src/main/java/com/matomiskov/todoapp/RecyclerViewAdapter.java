@@ -2,7 +2,6 @@ package com.matomiskov.todoapp;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +113,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
         }
+    }
+
+    public Todo getTodo(int i){
+        return todoList.get(i);
+    }
+
+    public void removeRow(Todo data) {
+        todoList.remove(data);
+        todoListFull.remove(data);
+        notifyDataSetChanged();
     }
 
     public interface ClickListener {

@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">AndroidRoomTodoList</string>
-    <string name="title_activity_todo_note">TodoNoteActivity</string>
+    <string name="app_name">ToDoApp</string>
+    <string name="title_activity_todo_note">ToDoNote</string>
 </resources>
