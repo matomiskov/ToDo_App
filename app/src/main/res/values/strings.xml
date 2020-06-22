@@ -1,4 +1,21 @@
 <resources>
-    <string name="app_name">ToDoApp</string>
-    <string name="title_activity_todo_note">ToDoNote</string>
+    <string name="app_name" translatable="false">ToDoApp</string>
+    <string name="title_activity_todo_note" translatable="false">ToDoNote</string>
+
+    <string name="search">Search...</string>
+    <string name="deleteAll">Delete all todos</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="sure">Are you sure?</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="titleSetUp">Title must be set up</string>
+    <string name="rowInsert">Row inserted</string>
+    <string name="rowDelete"> row deleted</string>
+    <string name="allDelete">All rows deleted</string>
+    <string name="rowsDelete"> rows deleted</string>
+    <string name="rowsupdated"> rows updated</string>
+    <string name="noAction">No action done by user</string>
+    <string name="changeLang">Change language</string>
+    <string name="chooseLang">Choose language</string>
 </resources>

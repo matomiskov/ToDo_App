@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="title_activity_todo_note" translatable="false">ToDoNote</string>
+    <string name="search">Suche...</string>
+    <string name="deleteAll">Löschen alle Aufgaben</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="sure">Bist du sicher?</string>
+    <string name="title">Name</string>
+    <string name="description">Beschreibung</string>
+    <string name="titleSetUp">Name muss eingerichtet sein</string>
+    <string name="rowInsert">Zeile eingefügt</string>
+    <string name="rowDelete">" zeile gelöscht"</string>
+    <string name="allDelete">Alle Zeilen gelöscht</string>
+    <string name="rowsDelete">" zeilen gelöscht"</string>
+    <string name="rowsupdated">zeilen aktualisiert</string>
+    <string name="noAction">Keine Aktion des Benutzers</string>
+    <string name="changeLang">Sprache ändern</string>
+    <string name="chooseLang">Sprache wählen</string>
+</resources>

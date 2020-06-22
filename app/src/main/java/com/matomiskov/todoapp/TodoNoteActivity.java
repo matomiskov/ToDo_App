@@ -1,12 +1,17 @@
 package com.matomiskov.todoapp;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,7 +26,6 @@ public class TodoNoteActivity extends AppCompatActivity {
 
     Spinner spinner;
     EditText inTitle, inDesc;
-    Button btnDone, btnDelete;
     boolean isNewTodo = false;
 
     private String[] categories = {
@@ -46,11 +50,12 @@ public class TodoNoteActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         inTitle = findViewById(R.id.inTitle);
         inDesc = findViewById(R.id.inDescription);
-        btnDone = findViewById(R.id.btnDone);
-        btnDelete = findViewById(R.id.btnDelete);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);   //show back button
 
         myDatabase = Room.databaseBuilder(getApplicationContext(), MyDatabase.class, MyDatabase.DB_NAME).build();
 
@@ -61,12 +66,33 @@ public class TodoNoteActivity extends AppCompatActivity {
 
         if (!isNewTodo) {
             fetchTodoById(todo_id);
-            btnDelete.setVisibility(View.VISIBLE);
         }
+    }
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.delete_all_todos).setVisible(false);
+        menu.findItem(R.id.changeL).setVisible(false);
+        menu.findItem(R.id.btnDone).setVisible(true);
+        if (!isNewTodo) {
+            menu.findItem(R.id.btnDelete).setVisible(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.btnDone:
                 if (isNewTodo) {
                     String title = inTitle.getText().toString();
                     if (title == null || title.length() == 0) {
@@ -91,19 +117,37 @@ public class TodoNoteActivity extends AppCompatActivity {
                         updateRow(updateTodo);
                     }
                 }
-            }
-        });
+                return true;
+            case R.id.btnDelete:
+                deleteDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-        btnDelete.setOnClickListener(new View.OnClickListener() {
+    public void deleteDialog() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                deleteRow(updateTodo);
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteRow(updateTodo);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
             }
-        });
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.sure)).setPositiveButton(getResources().getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
     }
 
     public void toast() {
-        Toast.makeText(this, "Title must be set", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.titleSetUp), Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("StaticFieldLeak")

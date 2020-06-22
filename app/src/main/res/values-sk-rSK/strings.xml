@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="title_activity_todo_note" translatable="false">ToDoNote</string>
+    <string name="search">Hľadaj...</string>
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
+    <string name="sure">Si si istý?</string>
+    <string name="title">Názov</string>
+    <string name="description">Popis</string>
+    <string name="titleSetUp">Musí byť zadaný názov</string>
+    <string name="rowInsert">Vložený riadok</string>
+    <string name="rowDelete">" riadok vymazaný"</string>
+    <string name="allDelete">Všetky riadky vymazané</string>
+    <string name="rowsDelete">" riadky vzmazané"</string>
+    <string name="rowsupdated">" riadky upravené"</string>
+    <string name="noAction">Užívateľ nič nevykonal</string>
+    <string name="changeLang">Zmena jazyka</string>
+    <string name="deleteAll">Vymaž všetky úlohy</string>
+    <string name="chooseLang">Vyber jazyk</string>
+</resources>

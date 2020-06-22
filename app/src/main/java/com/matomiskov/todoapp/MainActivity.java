@@ -1,9 +1,13 @@
 package com.matomiskov.todoapp;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ClickListener, AdapterView.OnItemSelectedListener {
 
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     Spinner spinner;
     RecyclerViewAdapter recyclerViewAdapter;
     FloatingActionButton floatingActionButton;
+    int checkedItem;
     private String[] categories = {
             "All",
             "Android",
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_main);
 
         initViews();
@@ -106,7 +113,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_all_todos:
-                deleteAllTodos();
+                deleteAllDialog();
+                return true;
+            case R.id.changeL:
+                changeLanguageDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -149,6 +159,78 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     }
 
+    public void changeLanguageDialog() {
+        final String[] listItems = {"EN", "DE", "SK"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.chooseLang));
+        builder.setSingleChoiceItems(listItems, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    setLocale("EN");
+                    recreate();
+                }
+                if (i == 1) {
+                    setLocale("DE");
+                    recreate();
+                }
+                if (i == 2) {
+                    setLocale("SK");
+                    recreate();
+                }
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void setLocale(String lang){
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.setLocale(locale);
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
+        editor.putString("My lang", lang);
+        editor.apply();
+    }
+
+    public void loadLocale(){
+        SharedPreferences sharedPreferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = sharedPreferences.getString("My lang", "");
+        if (language.equals("EN")){
+            checkedItem = 0;
+        }
+        if (language.equals("DE")){
+            checkedItem = 1;
+        }
+        if (language.equals("SK")){
+            checkedItem = 2;
+        }
+        setLocale(language);
+    }
+
+    public void deleteAllDialog() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteAllTodos();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.sure)).setPositiveButton(getResources().getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
+    }
+
     @SuppressLint("StaticFieldLeak")
     private void deleteAllTodos() {
         new AsyncTask<List<Todo>, Void, Void>() {
@@ -164,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             protected void onPostExecute(Void voids) {
                 super.onPostExecute(voids);
 
-                Toast.makeText(getApplicationContext(), " All rows deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.allDelete), Toast.LENGTH_SHORT).show();
                 recyclerViewAdapter.removeAllRows();
             }
         }.execute();
@@ -183,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             protected void onPostExecute(Integer number) {
                 super.onPostExecute(number);
 
-                Toast.makeText(getApplicationContext(), number + " rows deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), number + getResources().getString(R.string.rowDelete), Toast.LENGTH_SHORT).show();
                 recyclerViewAdapter.removeRow(todo);
             }
         }.execute(todo);
@@ -280,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             if (requestCode == NEW_TODO_REQUEST_CODE) {
                 long id = data.getLongExtra("id", -1);
-                Toast.makeText(getApplicationContext(), "Row inserted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.rowInsert), Toast.LENGTH_SHORT).show();
                 fetchTodoByIdAndInsert((int) id);
 
             } else if (requestCode == UPDATE_TODO_REQUEST_CODE) {
@@ -288,9 +370,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 boolean isDeleted = data.getBooleanExtra("isDeleted", false);
                 int number = data.getIntExtra("number", -1);
                 if (isDeleted) {
-                    Toast.makeText(getApplicationContext(), number + " rows deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), number + getResources().getString(R.string.rowsDelete), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), number + " rows updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), number + getResources().getString(R.string.rowsupdated), Toast.LENGTH_SHORT).show();
                 }
 
                 loadAllTodos();
@@ -299,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
 
         } else {
-            Toast.makeText(getApplicationContext(), "No action done by user", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.noAction), Toast.LENGTH_SHORT).show();
         }
     }
 
