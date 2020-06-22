@@ -102,6 +102,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_todos:
+                deleteAllTodos();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void initViews() {
         floatingActionButton = findViewById(R.id.fab);
         spinner = findViewById(R.id.spinner);
@@ -135,6 +146,28 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void deleteAllTodos() {
+        new AsyncTask<List<Todo>, Void, Void>() {
+            @Override
+            protected Void doInBackground(List<Todo>... params) {
+                myDatabase.daoAccess().deleteAllTodos();
+
+                return null;
+
+            }
+
+            @Override
+            protected void onPostExecute(Void voids) {
+                super.onPostExecute(voids);
+
+                Toast.makeText(getApplicationContext(), " All rows deleted", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.removeAllRows();
+            }
+        }.execute();
 
     }
 

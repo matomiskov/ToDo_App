@@ -7,4 +7,7 @@
         android:title="Search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
+    <item android:id="@+id/delete_all_todos"
+        android:title="Delete all todos"
+        app:showAsAction="never" />
 </menu>

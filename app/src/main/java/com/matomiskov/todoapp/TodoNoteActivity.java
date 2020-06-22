@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,19 +68,28 @@ public class TodoNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isNewTodo) {
-                    Todo todo = new Todo();
-                    todo.name = inTitle.getText().toString();
-                    todo.description = inDesc.getText().toString();
-                    todo.category = spinner.getSelectedItem().toString();
+                    String title = inTitle.getText().toString();
+                    if (title == null || title.length() == 0) {
+                        toast();
+                    } else {
+                        Todo todo = new Todo();
+                        todo.name = inTitle.getText().toString();
+                        todo.description = inDesc.getText().toString();
+                        todo.category = spinner.getSelectedItem().toString();
 
-                    insertRow(todo);
+                        insertRow(todo);
+                    }
                 } else {
+                    String title = inTitle.getText().toString();
+                    if (title == null || title.length() == 0) {
+                        toast();
+                    } else {
+                        updateTodo.name = inTitle.getText().toString();
+                        updateTodo.description = inDesc.getText().toString();
+                        updateTodo.category = spinner.getSelectedItem().toString();
 
-                    updateTodo.name = inTitle.getText().toString();
-                    updateTodo.description = inDesc.getText().toString();
-                    updateTodo.category = spinner.getSelectedItem().toString();
-
-                    updateRow(updateTodo);
+                        updateRow(updateTodo);
+                    }
                 }
             }
         });
@@ -90,6 +100,10 @@ public class TodoNoteActivity extends AppCompatActivity {
                 deleteRow(updateTodo);
             }
         });
+    }
+
+    public void toast() {
+        Toast.makeText(this, "Title must be set", Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("StaticFieldLeak")

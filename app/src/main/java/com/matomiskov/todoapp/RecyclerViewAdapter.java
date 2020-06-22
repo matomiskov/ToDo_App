@@ -125,6 +125,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
+    public void removeAllRows(){
+        todoList.clear();
+        todoListFull.clear();
+        notifyDataSetChanged();
+    }
+
     public interface ClickListener {
         void launchIntent(int id);
     }

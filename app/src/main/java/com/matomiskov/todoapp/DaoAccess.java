@@ -26,6 +26,9 @@ public interface DaoAccess {
     @Query("SELECT * FROM " + MyDatabase.TABLE_NAME_TODO + " WHERE todo_id = :todoId")
     Todo fetchTodoListById(int todoId);
 
+    @Query("DELETE FROM " + MyDatabase.TABLE_NAME_TODO)
+    void deleteAllTodos();
+
     @Update
     int updateTodo(Todo todo);
 

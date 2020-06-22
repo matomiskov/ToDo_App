@@ -20,7 +20,6 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Title"
-        android:text="Sample Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,8 +36,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Description"
-        android:minLines="3"
-        android:text="Sample Description"
+        android:minLines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
