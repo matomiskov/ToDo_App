@@ -18,4 +18,10 @@
     <string name="noAction">Keine Aktion des Benutzers</string>
     <string name="changeLang">Sprache ändern</string>
     <string name="chooseLang">Sprache wählen</string>
+    <string name="date" translatable="false">11/11/2020</string>
+    <string name="time" translatable="false">12:00</string>
+    <string name="all">Alles</string>
+    <string name="household">Haushalt</string>
+    <string name="work">Arbeit</string>
+    <string name="other">Andere</string>
 </resources>

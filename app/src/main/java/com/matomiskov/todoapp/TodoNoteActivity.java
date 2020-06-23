@@ -2,40 +2,45 @@ package com.matomiskov.todoapp;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 
-public class TodoNoteActivity extends AppCompatActivity {
+public class TodoNoteActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     Spinner spinner;
-    EditText inTitle, inDesc;
+    EditText inTitle, inDesc, inDate, inTime;
     boolean isNewTodo = false;
+    EditText eDate;
+    EditText eTime;
 
-    private String[] categories = {
-            "Android",
-            "iOS",
-            "Kotlin",
-            "Swift"
-    };
-
-    public ArrayList<String> spinnerList = new ArrayList<>(Arrays.asList(categories));
+    public ArrayList<String> spinnerList = new ArrayList<>();
     MyDatabase myDatabase;
 
     Todo updateTodo;
@@ -46,10 +51,35 @@ public class TodoNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_note);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        eDate = findViewById(R.id.inDate);
+        eTime = findViewById(R.id.inTime);
+
+        eDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
+
+        eTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "time picker");
+            }
+        });
 
         spinner = findViewById(R.id.spinner);
         inTitle = findViewById(R.id.inTitle);
         inDesc = findViewById(R.id.inDescription);
+        inDate = findViewById(R.id.inDate);
+        inTime = findViewById(R.id.inTime);
+
+        spinnerList.add(getResources().getString(R.string.household));
+        spinnerList.add(getResources().getString(R.string.work));
+        spinnerList.add(getResources().getString(R.string.other));
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -70,7 +100,7 @@ public class TodoNoteActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
@@ -101,6 +131,8 @@ public class TodoNoteActivity extends AppCompatActivity {
                         Todo todo = new Todo();
                         todo.name = inTitle.getText().toString();
                         todo.description = inDesc.getText().toString();
+                        todo.date = inDate.getText().toString();
+                        todo.time = inTime.getText().toString();
                         todo.category = spinner.getSelectedItem().toString();
 
                         insertRow(todo);
@@ -112,6 +144,8 @@ public class TodoNoteActivity extends AppCompatActivity {
                     } else {
                         updateTodo.name = inTitle.getText().toString();
                         updateTodo.description = inDesc.getText().toString();
+                        updateTodo.date = inDate.getText().toString();
+                        updateTodo.time = inTime.getText().toString();
                         updateTodo.category = spinner.getSelectedItem().toString();
 
                         updateRow(updateTodo);
@@ -165,6 +199,8 @@ public class TodoNoteActivity extends AppCompatActivity {
                 super.onPostExecute(todo);
                 inTitle.setText(todo.name);
                 inDesc.setText(todo.description);
+                inDate.setText(todo.date);
+                inTime.setText(todo.time);
                 spinner.setSelection(spinnerList.indexOf(todo.category));
 
                 updateTodo = todo;
@@ -237,4 +273,24 @@ public class TodoNoteActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, month);
+        myCalendar.set(Calendar.DAY_OF_MONTH, day);
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        eDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        String min = String.valueOf(minute);
+        if (minute / 10 == 0) {
+            min = "0" + minute;
+        }
+        Log.d("MIN ", String.valueOf(minute));
+        eTime.setText(hour + ":" + min);
+    }
 }

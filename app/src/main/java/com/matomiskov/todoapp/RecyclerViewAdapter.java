@@ -37,6 +37,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.txtName.setText(todo.name);
         holder.txtDesc.setText(todo.description);
         holder.txtCategory.setText(todo.category);
+        holder.txtDate.setText(todo.date);
+        holder.txtTime.setText(todo.time);
 
     }
 
@@ -97,6 +99,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public TextView txtName;
         public TextView txtDesc;
         public TextView txtCategory;
+        public TextView txtDate;
+        public TextView txtTime;
         public CardView cardView;
 
         public ViewHolder(View view) {
@@ -105,6 +109,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             txtName = view.findViewById(R.id.txtName);
             txtDesc = view.findViewById(R.id.txtDesc);
             txtCategory = view.findViewById(R.id.txtCategory);
+            txtDate = view.findViewById(R.id.txtDate);
+            txtTime = view.findViewById(R.id.txtTime);
             cardView = view.findViewById(R.id.cardView);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

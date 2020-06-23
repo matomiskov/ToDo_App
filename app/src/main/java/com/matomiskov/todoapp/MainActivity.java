@@ -39,16 +39,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     RecyclerViewAdapter recyclerViewAdapter;
     FloatingActionButton floatingActionButton;
     int checkedItem;
-    private String[] categories = {
-            "All",
-            "Android",
-            "iOS",
-            "Kotlin",
-            "Swift"
-    };
 
     ArrayList<Todo> todoArrayList = new ArrayList<>();
-    ArrayList<String> spinnerList = new ArrayList<>(Arrays.asList(categories));
+    ArrayList<String> spinnerList = new ArrayList<>();
 
     public static final int NEW_TODO_REQUEST_CODE = 200;
     public static final int UPDATE_TODO_REQUEST_CODE = 300;
@@ -63,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         initViews();
         myDatabase = Room.databaseBuilder(getApplicationContext(), MyDatabase.class, MyDatabase.DB_NAME).fallbackToDestructiveMigration().build();
         checkIfAppLaunchedFirstTime();
+
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(0);
 
@@ -126,6 +120,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private void initViews() {
         floatingActionButton = findViewById(R.id.fab);
         spinner = findViewById(R.id.spinner);
+
+        spinnerList.add(getResources().getString(R.string.all));
+        spinnerList.add(getResources().getString(R.string.household));
+        spinnerList.add(getResources().getString(R.string.work));
+        spinnerList.add(getResources().getString(R.string.other));
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     private void buildDummyTodos() {
-        Todo todo = new Todo();
+        /*Todo todo = new Todo();
         todo.name = "Android Retrofit Tutorial";
         todo.description = "Cover a tutorial on the Retrofit networking library using a RecyclerView to show the data.";
         todo.category = "Android";
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         todo.category = "Swift";
 
         todoArrayList.add(todo);
-        insertList(todoArrayList);
+        insertList(todoArrayList);*/
     }
 
     @Override

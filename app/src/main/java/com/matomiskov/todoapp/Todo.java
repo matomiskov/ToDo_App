@@ -17,6 +17,10 @@ public class Todo implements Serializable {
 
     public String category;
 
+    public String date;
+
+    public String time;
+
     @Ignore
     public String priority;
 
