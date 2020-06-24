@@ -24,4 +24,6 @@
     <string name="household">Domácnosť</string>
     <string name="work">Práca</string>
     <string name="other">Ostatné</string>
+    <string name="dateSetUp">Musí byť zadaný dátum</string>
+    <string name="timeSetUp">Musí byť zadaný čas</string>
 </resources>

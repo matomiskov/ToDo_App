@@ -24,4 +24,6 @@
     <string name="household">Haushalt</string>
     <string name="work">Arbeit</string>
     <string name="other">Andere</string>
+    <string name="dateSetUp">Datum muss eingerichtet sein</string>
+    <string name="timeSetUp">Zeit muss eingerichtet sein</string>
 </resources>

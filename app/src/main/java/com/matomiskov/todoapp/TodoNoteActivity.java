@@ -125,27 +125,43 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
             case R.id.btnDone:
                 if (isNewTodo) {
                     String title = inTitle.getText().toString();
+                    String date = inDate.getText().toString();
+                    String time = inTime.getText().toString();
                     if (title == null || title.length() == 0) {
-                        toast();
+                        toast(0);
+                    }
+                    if (date == null || date.length() == 0) {
+                        toast(1);
+                    }
+                    if (time == null || time.length() == 0) {
+                        toast(2);
                     } else {
                         Todo todo = new Todo();
-                        todo.name = inTitle.getText().toString();
+                        todo.name = title;
                         todo.description = inDesc.getText().toString();
-                        todo.date = inDate.getText().toString();
-                        todo.time = inTime.getText().toString();
+                        todo.date = date;
+                        todo.time = time;
                         todo.category = spinner.getSelectedItem().toString();
 
                         insertRow(todo);
                     }
                 } else {
                     String title = inTitle.getText().toString();
+                    String date = inDate.getText().toString();
+                    String time = inTime.getText().toString();
                     if (title == null || title.length() == 0) {
-                        toast();
+                        toast(0);
+                    }
+                    if (date == null || date.length() == 0) {
+                        toast(1);
+                    }
+                    if (time == null || time.length() == 0) {
+                        toast(2);
                     } else {
-                        updateTodo.name = inTitle.getText().toString();
+                        updateTodo.name = title;
                         updateTodo.description = inDesc.getText().toString();
-                        updateTodo.date = inDate.getText().toString();
-                        updateTodo.time = inTime.getText().toString();
+                        updateTodo.date = date;
+                        updateTodo.time = time;
                         updateTodo.category = spinner.getSelectedItem().toString();
 
                         updateRow(updateTodo);
@@ -180,8 +196,15 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
                 .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
     }
 
-    public void toast() {
-        Toast.makeText(this, getResources().getString(R.string.titleSetUp), Toast.LENGTH_SHORT).show();
+    public void toast(int i) {
+        if (i == 0) {
+            Toast.makeText(this, getResources().getString(R.string.titleSetUp), Toast.LENGTH_SHORT).show();
+        }
+        if (i == 1) {
+            Toast.makeText(this, getResources().getString(R.string.dateSetUp), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.timeSetUp), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -279,8 +302,8 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, month);
         myCalendar.set(Calendar.DAY_OF_MONTH, day);
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         eDate.setText(sdf.format(myCalendar.getTime()));
     }
 

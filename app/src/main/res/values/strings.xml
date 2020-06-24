@@ -24,4 +24,6 @@
     <string name="household">Household</string>
     <string name="work">Work</string>
     <string name="other">Other</string>
+    <string name="dateSetUp">Date must be set up</string>
+    <string name="timeSetUp">Time must be set up</string>
 </resources>

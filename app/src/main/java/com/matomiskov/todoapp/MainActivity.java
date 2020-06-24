@@ -3,7 +3,10 @@ package com.matomiskov.todoapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.arch.persistence.room.Room;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,13 +43,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     RecyclerViewAdapter recyclerViewAdapter;
     FloatingActionButton floatingActionButton;
     int checkedItem;
+    private static final String TAG = "MainActivity";
 
     ArrayList<Todo> todoArrayList = new ArrayList<>();
     ArrayList<String> spinnerList = new ArrayList<>();
 
     public static final int NEW_TODO_REQUEST_CODE = 200;
     public static final int UPDATE_TODO_REQUEST_CODE = 300;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 removeTodo(recyclerViewAdapter.getTodo(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(recyclerView);
+
+        scheduleJob(getWindow().getDecorView().getRootView());
     }
 
     @Override
@@ -185,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         alertDialog.show();
     }
 
-    private void setLocale(String lang){
+    private void setLocale(String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Configuration configuration = new Configuration();
@@ -196,16 +202,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         editor.apply();
     }
 
-    public void loadLocale(){
+    public void loadLocale() {
         SharedPreferences sharedPreferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         String language = sharedPreferences.getString("My lang", "");
-        if (language.equals("EN")){
+        if (language.equals("EN")) {
             checkedItem = 0;
         }
-        if (language.equals("DE")){
+        if (language.equals("DE")) {
             checkedItem = 1;
         }
-        if (language.equals("SK")){
+        if (language.equals("SK")) {
             checkedItem = 2;
         }
         setLocale(language);
@@ -322,30 +328,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     private void buildDummyTodos() {
         /*Todo todo = new Todo();
-        todo.name = "Android Retrofit Tutorial";
-        todo.description = "Cover a tutorial on the Retrofit networking library using a RecyclerView to show the data.";
-        todo.category = "Android";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "iOS TableView Tutorial";
-        todo.description = "Covers the basics of TableViews in iOS using delegates.";
-        todo.category = "iOS";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "Kotlin Arrays";
-        todo.description = "Cover the concepts of Arrays in Kotlin and how they differ from the Java ones.";
-        todo.category = "Kotlin";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "Swift Arrays";
-        todo.description = "Cover the concepts of Arrays in Swift and how they differ from the Java and Kotlin ones.";
-        todo.category = "Swift";
 
         todoArrayList.add(todo);
         insertList(todoArrayList);*/
@@ -413,5 +395,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             settings.edit().putBoolean("firstTime", false).apply();
             buildDummyTodos();
         }
+    }
+
+    public void scheduleJob(View view) {
+        ComponentName componentName = new ComponentName(this, TodoJobService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName).setPersisted(true).setPeriodic(15 * 60 * 1000).build();
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = jobScheduler.schedule(info);
+        if(resultCode == JobScheduler.RESULT_SUCCESS){
+            Log.d("TAG", "Job scheduled");
+        }else{
+            Log.d("TAG", "Job scheduling failed");
+        }
+    }
+
+    public void cancelJob(View view) {
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(123);
+        Log.d("TAG", "Job cancelled");
     }
 }
