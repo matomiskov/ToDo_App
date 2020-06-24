@@ -141,7 +141,7 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
                         todo.description = inDesc.getText().toString();
                         todo.date = date;
                         todo.time = time;
-                        todo.category = spinner.getSelectedItem().toString();
+                        todo.category = convertSpinner();
 
                         insertRow(todo);
                     }
@@ -162,7 +162,7 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
                         updateTodo.description = inDesc.getText().toString();
                         updateTodo.date = date;
                         updateTodo.time = time;
-                        updateTodo.category = spinner.getSelectedItem().toString();
+                        updateTodo.category = convertSpinner();
 
                         updateRow(updateTodo);
                     }
@@ -174,6 +174,23 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public String convertSpinner(){
+        String sCategory;
+        String ssp = spinner.getSelectedItem().toString();
+        if (ssp.equals(getResources().getString(R.string.household))) {
+            sCategory = "1";
+        }
+        else if (ssp.equals(getResources().getString(R.string.work))) {
+            sCategory = "2";
+        }
+        else if (ssp.equals(getResources().getString(R.string.other))) {
+            sCategory = "3";
+        } else {
+            throw new IllegalStateException("Unexpected value: " + spinner.getSelectedItem().toString());
+        }
+        return sCategory;
     }
 
     public void deleteDialog() {
@@ -224,12 +241,27 @@ public class TodoNoteActivity extends AppCompatActivity implements DatePickerDia
                 inDesc.setText(todo.description);
                 inDate.setText(todo.date);
                 inTime.setText(todo.time);
-                spinner.setSelection(spinnerList.indexOf(todo.category));
+                spinner.setSelection(spinnerList.indexOf(indexToCategory(todo.category)));
 
                 updateTodo = todo;
             }
         }.execute(todo_id);
 
+    }
+
+    public String indexToCategory(String category){
+        String sCategory = "";
+       switch (category){
+            case "1": sCategory = getResources().getString(R.string.household);
+                break;
+            case "2": sCategory = getResources().getString(R.string.work);
+                break;
+            case "3": sCategory = getResources().getString(R.string.other);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + category);
+        }
+        return sCategory;
     }
 
     @SuppressLint("StaticFieldLeak")

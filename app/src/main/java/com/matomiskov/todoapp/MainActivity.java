@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewAdapter = new RecyclerViewAdapter(this);
+        recyclerViewAdapter = new RecyclerViewAdapter(this, this);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
@@ -156,8 +156,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             loadAllTodos();
         } else {
             String string = parent.getItemAtPosition(position).toString();
-            loadFilteredTodos(string);
+            String convert = convertSpinner(string);
+            loadFilteredTodos(convert);
         }
+    }
+
+    public String convertSpinner(String ssp){
+        String sCategory;
+        if (ssp.equals(getResources().getString(R.string.household))) {
+            sCategory = "1";
+        }
+        else if (ssp.equals(getResources().getString(R.string.work))) {
+            sCategory = "2";
+        }
+        else if (ssp.equals(getResources().getString(R.string.other))) {
+            sCategory = "3";
+        } else {
+            throw new IllegalStateException("Unexpected value: " + spinner.getSelectedItem().toString());
+        }
+        return sCategory;
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.matomiskov.todoapp;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Todo> todoList;
     private List<Todo> todoListFull;
     private RecyclerViewAdapter.ClickListener clickListener;
+    private Context context;
 
-    public RecyclerViewAdapter(ClickListener clickListener) {
+    public RecyclerViewAdapter(ClickListener clickListener, Context context) {
         this.clickListener = clickListener;
         todoList = new ArrayList<>();
+        this.context = context;
     }
 
     @Override
@@ -36,7 +40,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Todo todo = todoList.get(position);
         holder.txtName.setText(todo.name);
         holder.txtDesc.setText(todo.description);
-        holder.txtCategory.setText(todo.category);
+        String sCategory = "";
+        switch (todo.category){
+            case "1": sCategory = context.getString(R.string.household);
+                break;
+            case "2": sCategory = context.getString(R.string.work);
+                break;
+            case "3": sCategory = context.getString(R.string.other);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + todo.category);
+        }
+        holder.txtCategory.setText(sCategory);
         holder.txtDate.setText(todo.date);
         holder.txtTime.setText(todo.time);
 

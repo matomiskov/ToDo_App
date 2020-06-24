@@ -80,8 +80,6 @@ public class TodoJobService extends JobService {
                 dt = c.getTime();
                 String currentTimePlus = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(dt);
 
-
-                Log.d("TAG", "+++");
                 for (int i = 0; i < todoList.size(); i++) {
                     Todo todo = todoList.get(i);
                     SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
